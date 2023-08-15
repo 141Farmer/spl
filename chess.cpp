@@ -1,53 +1,62 @@
 #include<iostream>
-#ifdef _WIN32
 #include<Windows.h>
-#endif
+#include<vector>
+#include<cstring>
 using namespace std;
 
-int boardSize=8;
+const int boardSize=8;
 bool board[8][8];
-typedef struct _CONSOLE_FONT_INFOEX
+
+const string whitePawn="\u2659";
+const string blackPawn="\u265F";
+const string whiteKnight="\u2658";
+const string blackKnight="\u265E";
+const string whiteBishop="\u2657";
+const string blackBishop="\u265D";
+const string whiteRook="\u2656";
+const string blackRook="\u265C";
+const string whiteQueen="\u2655";
+const string blackQueen="\u265B";
+const string whiteKing="\u2654";
+const string blackKing="\u265A";
+
+const vector<vector<string>> defaultBoard={
+    {blackRook,blackKnight,blackBishop,blackQueen,blackKing,blackBishop,blackKing,blackRook},
+    {blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn},
+    {" "," "," "," "," "," "," "," "},
+    {" "," "," "," "," "," "," "," "},
+    {" "," "," "," "," "," "," "," "},
+    {" "," "," "," "," "," "," "," "},
+    {whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn},
+    {whiteRook,whiteKnight,whiteBishop,whiteQueen,whiteKing,whiteBishop,whiteKnight,whiteRook}
+    };
+void whitePrint(string str)
 {
-    ULONG cbSize;
-    DWORD nFont;
-    COORD dwFontSize;
-    UINT  FontFamily;
-    UINT  FontWeight;
-    WCHAR FaceName[LF_FACESIZE];
+    cout<<"\033[0m  "<<str<<"  ";
 }
-CONSOLE_FONT_INFOEX, *PCONSOLE_FONT_INFOEX;
-
-BOOL WINAPI SetCurrentConsoleFontEx(HANDLE hConsoleOutput, BOOL bMaximumWindow, PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx);
-BOOL GetCurrentConsoleFontEx(HANDLE hConsoleOutput,BOOL bMaximumWindow,PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx);
-HANDLE GetStdHandle(DWORD nStdHandle);
-
-
-
-void setFont()
+void blackPrint(string str)
 {
-    #ifdef _WIN32
-
-    CONSOLE_FONT_INFOEX fontex;
-    fontex.cbSize=sizeof(CONSOLE_FONT_INFOEX);
-    HANDLE handle=GetStdHandle(STD_OUTPUT_HANDLE);
-    GetCurrentConsoleFontEx(handle,FALSE,&fontex);
-
-    fontex.dwFontSize.X=20;
-    fontex.dwFontSize.Y=20;
-
-    SetCurrentConsoleFontEx(handle,FALSE,&fontex);
-
-    #endif
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
+    cout<<"  "<<str<<"  ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 }
+/*void blackPrint(string str)
+{
+    cout<<"\033[0;100m"<<str<<" \033[0m";
+}*/
+
+
 void chessboard()
 {
+    system("cls");
+
     int i,j;
     for(i=0;i<boardSize;++i)
     {
         for(j=0;j<boardSize;++j)
         {
-            if((i+j) & 1) cout<<"\u25A1";
-            else cout<<"\u25A0";
+            if((i+j) & 1)  whitePrint(defaultBoard[i][j]);
+            else blackPrint(defaultBoard[i][j]);
         }
         cout<<endl;
     }
@@ -56,5 +65,4 @@ void chessboard()
 int main()
 {
     chessboard();
-
 }
