@@ -5,7 +5,6 @@
 using namespace std;
 
 const int boardSize=8;
-bool board[8][8];
 
 const string whitePawn="\u2659";
 const string blackPawn="\u265F";
@@ -20,7 +19,29 @@ const string blackQueen="\u265B";
 const string whiteKing="\u2654";
 const string blackKing="\u265A";
 
-const vector<vector<string>> defaultBoard={
+enum squareValue
+{
+    black,
+    empty,
+    white,
+    king
+};
+
+vector<vector<squareValue>> board={
+    {black,black,black,black,king,black,black,black},
+    {black,black,black,black,black,black,black,black},
+    {empty,empty,empty,empty,empty,empty,empty,empty},
+    {empty,empty,empty,empty,empty,empty,empty,empty},
+    {empty,empty,empty,empty,empty,empty,empty,empty},
+    {empty,empty,empty,empty,empty,empty,empty,empty},
+    {white,white,white,white,white,white,white,white},
+    {white,white,white,white,king,white,white,white}
+};
+
+
+
+
+ vector<vector<string>> defaultBoard={
     {blackRook,blackKnight,blackBishop,blackQueen,blackKing,blackBishop,blackKing,blackRook},
     {blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn},
     {" "," "," "," "," "," "," "," "},
@@ -29,7 +50,129 @@ const vector<vector<string>> defaultBoard={
     {" "," "," "," "," "," "," "," "},
     {whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn,whitePawn},
     {whiteRook,whiteKnight,whiteBishop,whiteQueen,whiteKing,whiteBishop,whiteKnight,whiteRook}
-    };
+};
+
+void reposition(int i,int j,int k,int l,squareValue sV,string piece)
+{
+    if(sV==black)
+    {
+        board[i][j]=empty;
+        board[k][l]=black;
+        defaultBoard[i][j]=" ";
+        defaultBoard[k][l]=piece;
+    }
+    if(sV==white)
+    {
+        board[i][j]=empty;
+        board[k][l]=white;
+        defaultBoard[i][j]=" ";
+        defaultBoard[k][l]=piece;
+    }
+
+}
+void checkPiece(int i,int j,int k,int l,squareValue sV)
+{
+    if(sV==white)
+    {
+        if(defaultBoard[i][j]==whitePawn) 
+            return pawnMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==whiteRook) 
+            return rookMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==whiteKnight) 
+            return knightnMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==whiteBishop) 
+            return bishopMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==whiteQueen) 
+            return queenMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==whiteKing) 
+            return kingMove(i,j,k,l,sV);
+    }
+    if(sV==black)
+    {
+        if(defaultBoard[i][j]==blackPawn) 
+            return pawnMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==blackRook) 
+            return rookMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==blackKnight) 
+            return knightMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==blackBishop) 
+            return bishopMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==blackQueen) 
+            return queenMove(i,j,k,l,sV);
+        if(defaultBoard[i][j]==blackKing) 
+            return kingMove(i,j,k,l,sV);
+    }
+
+}
+void pawnMove(int i,int j,int k,int l,squareValue sV) // work left
+{
+    if()
+    
+}
+
+void rookMove(squareValue sV,int i,int j,int k,int l)
+{
+    if(sV==white)
+    {
+        if(defaultBoard[i][j]!=whiteRook)
+        {
+            cout<<"Invalid move\n";
+            return ;
+        }
+        
+        
+        if(board[k][l]==empty or board[k][l]==black)
+        {
+            board[k][l]=white;
+            defaultBoard[i][j]=" ";
+            defaultBoard[k][l]=whiteRook;
+        }
+
+    }
+    if(sV==black)
+    {
+        if(defaultBoard[i][j]!=blackRook)
+        {
+            cout<<"Invalid move\n";
+            return ;
+        }
+        if(i!=k)
+        {
+            cout<<"Invalid move\n";
+            return ;
+        }
+        if(j!=l)
+        {
+            cout<<"Invalid move\n";
+            return ;
+        }
+        
+        
+        if(board[k][l]==empty or board[k][l]==white)
+        {
+            board[k][l]=white;
+            defaultBoard[i][j]=" ";
+            defaultBoard[k][l]=whiteRook;
+        }
+
+    }
+}
+void knightMove(int i,int j,int k,int l,squareValue sV)
+{
+
+}
+void bishopMove(int i,int j,int k,int l,squaredValue sV)
+{
+
+}
+void queenMove(int i,int j,int k,int l,squareValue sV)
+{
+
+}
+void kingMove(int i,int j,int k,int l,squareValue sV)
+{
+
+}
 void whitePrint(string str)
 {
     cout<<"\033[0m  "<<str<<"  ";
@@ -48,7 +191,7 @@ void blackPrint(string str)
 
 void chessboard()
 {
-    system("cls");
+    //system("cls");
 
     int i,j;
     for(i=0;i<boardSize;++i)
@@ -64,5 +207,8 @@ void chessboard()
 }
 int main()
 {
+    chessboard();
+    //pawnMove(1,2,black);
+    //pawnMove(6,2,white);
     chessboard();
 }
