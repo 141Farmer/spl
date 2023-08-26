@@ -70,47 +70,13 @@ void reposition(int i,int j,int k,int l,squareValue sV,string piece)
     }
 
 }
-void checkPiece(int i,int j,int k,int l,squareValue sV)
-{
-    if(sV==white)
-    {
-        if(defaultBoard[i][j]==whitePawn) 
-            return pawnMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==whiteRook) 
-            return rookMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==whiteKnight) 
-            return knightnMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==whiteBishop) 
-            return bishopMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==whiteQueen) 
-            return queenMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==whiteKing) 
-            return kingMove(i,j,k,l,sV);
-    }
-    if(sV==black)
-    {
-        if(defaultBoard[i][j]==blackPawn) 
-            return pawnMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==blackRook) 
-            return rookMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==blackKnight) 
-            return knightMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==blackBishop) 
-            return bishopMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==blackQueen) 
-            return queenMove(i,j,k,l,sV);
-        if(defaultBoard[i][j]==blackKing) 
-            return kingMove(i,j,k,l,sV);
-    }
 
-}
 void pawnMove(int i,int j,int k,int l,squareValue sV) // work left
 {
-    if()
     
 }
 
-void rookMove(squareValue sV,int i,int j,int k,int l)
+void rookMove(int i,int j,int k,int l,squareValue sV)
 {
     if(sV==white)
     {
@@ -161,7 +127,7 @@ void knightMove(int i,int j,int k,int l,squareValue sV)
 {
 
 }
-void bishopMove(int i,int j,int k,int l,squaredValue sV)
+void bishopMove(int i,int j,int k,int l,squareValue sV)
 {
 
 }
@@ -171,6 +137,40 @@ void queenMove(int i,int j,int k,int l,squareValue sV)
 }
 void kingMove(int i,int j,int k,int l,squareValue sV)
 {
+
+}
+void checkPiece(int i,int j,int k,int l,squareValue sV)
+{
+    if(sV==white)
+    {
+        if(defaultBoard[i][j]==whitePawn) 
+            pawnMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==whiteRook) 
+            rookMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==whiteKnight) 
+            knightMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==whiteBishop) 
+            bishopMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==whiteQueen) 
+            queenMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==whiteKing) 
+            kingMove(i,j,k,l,sV);
+    }
+    else if(sV==black)
+    {
+        if(defaultBoard[i][j]==blackPawn) 
+            pawnMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==blackRook) 
+            rookMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==blackKnight) 
+            knightMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==blackBishop) 
+            bishopMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==blackQueen) 
+            queenMove(i,j,k,l,sV);
+        else if(defaultBoard[i][j]==blackKing) 
+            kingMove(i,j,k,l,sV);
+    }
 
 }
 void whitePrint(string str)
