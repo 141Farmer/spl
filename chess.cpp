@@ -86,7 +86,7 @@ void pawnMove(int i,int j,int k,int l,squareValue sV) // work left
             reposition(i,j,k,l,sV,whitePawn); 
         else cout<<"wrong move\n";
     }
-    if(sV==black)
+    else if(sV==black)
     {
         if(defaultBoard[i][j]!=blackPawn)
         {
@@ -112,25 +112,25 @@ void rookMove(int i,int j,int k,int l,squareValue sV)
         if(l==j and k!=i)
         {
             bool flag=1;
-            for(int temp=i;temp>=k;--temp)
+            for(int temp=i-1;temp>=k;--temp)
             {
                 if(board[temp][j]!=empty)
                 {
-                    cout<<"Wrong move\n";
+                    cout<<"Wrong move in board\n";
                     flag=0;
                     break;
                 }
             }
             if(flag) reposition(i,j,k,l,sV,whiteRook);
         }
-        if(k==i and l!=j)
+        else if(k==i and l!=j)
         {
             bool flag=1;
-            for(int temp=j;(l>j)?temp<=l:temp>=l;(l>j)?++temp:--temp)
+            for(int temp=j+1;(l>j)?temp<=l:temp>=l;(l>j)?++temp:--temp)
             {
                 if(board[i][temp]!=empty)
                 {
-                    cout<<"Wrong move\n";
+                    cout<<"Wrong move\n";                   
                     flag=0;
                     break;
                 }
@@ -143,7 +143,7 @@ void rookMove(int i,int j,int k,int l,squareValue sV)
         if(l==j and k!=i)
         {
             bool flag=1;
-            for(int temp=i;k<=l;++temp) //left
+            for(int temp=i+1;k<=l;++temp) //left
             {
                 if(board[temp][j]!=empty)
                 {
@@ -157,7 +157,7 @@ void rookMove(int i,int j,int k,int l,squareValue sV)
         if(k==i and l!=j)
         {
             bool flag=1;
-            for(int temp=j;(l>j)?temp<=l:temp>=l;(l>j)?++temp:--temp) //left
+            for(int temp=j+1;(l>j)?temp<=l:temp>=l;(l>j)?++temp:--temp) //left
             {
                 if(board[i][temp]!=empty)
                 {
@@ -251,7 +251,6 @@ void chessboard()
         }
         cout<<endl;
     }
-
 }
 void cellAssist()
 {
@@ -265,6 +264,7 @@ void cellAssist()
         cout<<endl;
     }
 }
+
 int main()
 {
     chessboard();
@@ -272,7 +272,8 @@ int main()
     //pawnMove(6,2,white);
     //chessboard();
     cellAssist();
-    pawnMove(4,0,5,0,empty);
+    pawnMove(6,0,5,0,white);
+    rookMove(7,0,6,0,white);
     chessboard();
     
 
