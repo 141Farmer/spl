@@ -1,7 +1,9 @@
 #include<iostream>
-#include<Windows.h>
 #include<vector>
 #include<cstring>
+#ifdef _WIN32
+#include<Windows.h>
+#endif
 using namespace std;
 
 const int boardSize=8;
@@ -42,7 +44,7 @@ vector<vector<squareValue>> board={
 
 
  vector<vector<string>> defaultBoard={
-    {blackRook,blackKnight,blackBishop,blackQueen,blackKing,blackBishop,blackKing,blackRook},
+    {blackRook,blackKnight,blackBishop,blackQueen,blackKing,blackBishop,blackKnight,blackRook},
     {blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn},
     {" "," "," "," "," "," "," "," "},
     {" "," "," "," "," "," "," "," "},
@@ -82,6 +84,8 @@ void pawnMove(int i,int j,int k,int l,squareValue sV) // work left
         }
         if(board[k][l]==empty and k==i-1 and l==j)
             reposition(i,j,k,l,sV,whitePawn);
+        else if(board[k][l]==empty and k==i-2 and l==j and i==6)
+            reposition(i,j,k,l,sV,whitePawn);
         else if(board[k][l]==black and k==i-1 and (l==j+1 or l==j-1))
             reposition(i,j,k,l,sV,whitePawn); 
         else cout<<"wrong move\n";
@@ -93,7 +97,9 @@ void pawnMove(int i,int j,int k,int l,squareValue sV) // work left
             cout<<"Invalid move\n";
             return;
         }
-        if(board[k][k]==empty and  k==i+1 and l==j)
+        if(board[l][k]==empty and  k==i+1 and l==j)
+            reposition(i,j,k,l,sV,blackPawn);
+        else if(board[l][k]==empty and k==i+2 and l==j and i==1)
             reposition(i,j,k,l,sV,blackPawn);
         else if(board[k][l]==white and k==i+1 and (l==j+1 or l==j-1))
             reposition(i,j,k,l,sV,blackPawn);
@@ -221,25 +227,42 @@ void checkPiece(int i,int j,int k,int l,squareValue sV)
     }
 
 }
-void whitePrint(string str)
+/*void whitePrint(string str)
 {
     cout<<"\033[0m  "<<str<<"  ";
 }
-void blackPrint(string str)
+/*void blackPrint(string str)
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
     cout<<"  "<<str<<"  ";
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-}
-/*void blackPrint(string str)
+}*/
+/*=void blackPrint(string str)
 {
     cout<<"\033[0;100m"<<str<<" \033[0m";
 }*/
 
+void printWithColor(string str,int textColor,int bgColor)
+{
+    #ifdef _WIN32
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),textColor | (bgColor<<4));
+    cout<<"  "<<str<<"  ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),15);
+    #endif
+}
+
+void whitePrint(string str)
+{
+    printWithColor(str,15,0);
+}
+
+void blackPrint(string str)
+{
+    printWithColor(str,0,15);
+}
 
 void chessboard()
 {
-    //system("cls");
 
     int i,j;
     for(i=0;i<boardSize;++i)
@@ -252,6 +275,19 @@ void chessboard()
         cout<<endl;
     }
 }
+void reverseChessboard()
+{
+    int i,j;
+    for(i=boardSize-1;i>=0;--i)
+    {
+        for(j=boardSize-1;j>=0;--j)
+        {
+            if((i+j) & 1) blackPrint(defaultBoard[i][j]);
+            else whitePrint(defaultBoard[i][j]);
+        }
+        cout<<endl;
+    }
+}
 void cellAssist()
 {
     int i,j;
@@ -259,22 +295,51 @@ void cellAssist()
     {
         for(j=0;j<boardSize;++j)
         {
-            cout<<i<<j<<"  ";
+            cout<<i<<j<<"   ";
+        }
+        cout<<endl;
+    }
+    cout<<endl;
+}
+void reverseCellAssist()
+{
+    int i,j;
+    for(i=boardSize-1;i>=0;--i)
+    {
+        for(j=boardSize-1;j>=0;--j)
+        {
+            cout<<i<<j<<"   ";
         }
         cout<<endl;
     }
 }
+void game()
+{
+    int src,dest,count=1;
+    while(true)
+    {
+        if(count&1) chessboard();
+        else reverseChessboard();
+        cellAssist();
+        cout<<"Enter source cell and destination cell\n";
+        cin>>src>>dest;
+        int i=src/10;
+        int j=src%10;
+        int k=dest/10;
+        int l=dest%10;
+        if(count & 1) checkPiece(i,j,k,l,white);
+        else checkPiece(i,j,k,l,black);
+        ++count;
+        if(count==50)
+        {
+            cout<<"Match drawn \n";
+            break;
+        }
+    }
 
+}
 int main()
 {
-    chessboard();
-    //pawnMove(1,2,black);
-    //pawnMove(6,2,white);
-    //chessboard();
-    cellAssist();
-    pawnMove(6,0,5,0,white);
-    rookMove(7,0,6,0,white);
-    chessboard();
-    
-
+    system("cls");
+    game();
 }
