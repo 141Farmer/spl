@@ -54,25 +54,13 @@ vector<vector<squareValue>> board={
     {whiteRook,whiteKnight,whiteBishop,whiteQueen,whiteKing,whiteBishop,whiteKnight,whiteRook}
 };
 
-void reposition(int i,int j,int k,int l,squareValue sV,string piece)
+void reposition(int i,int j,int k,int l,squareValue sV,string piece) 
 {
-    if(sV==black)
-    {
-        board[i][j]=empty;
-        board[k][l]=black;
-        defaultBoard[i][j]=" ";
-        defaultBoard[k][l]=piece;
-    }
-    if(sV==white)
-    {
-        board[i][j]=empty;
-        board[k][l]=white;
-        defaultBoard[i][j]=" ";
-        defaultBoard[k][l]=piece;
-    }
-
+    board[i][j] = empty;
+    board[k][l] = sV;
+    defaultBoard[i][j] = " ";
+    defaultBoard[k][l] = piece;
 }
-
 void pawnMove(int i,int j,int k,int l,squareValue sV) 
 {
     if(sV==white) 
@@ -192,7 +180,7 @@ void knightMove(int i,int j,int k,int l,squareValue sV)
     {
         if(board[k][l]!=empty and board[k][l]!=sV) 
         {
-            reposition(i,j,k,l,sV,(sV == white) ? whiteKnight : blackKnight);
+            reposition(i,j,k,l,sV,(sV==white) ? whiteKnight : blackKnight);
         } 
         else if(board[k][l]==empty) 
         {
@@ -237,47 +225,133 @@ void bishopMove(int i,int j,int k,int l,squareValue sV)
     else   cout << "Invalid move\n"; 
 }
 
-void queenMove(int i,int j,int k,int l,squareValue sV)
+void queenMove(int i,int j,int k,int l,squareValue sV) 
 {
+    if(sV!=black and sV!=white) 
+    {
+        cout<<"Invalid piece\n";
+        return;
+    }
 
+    int delta_i=abs(k - i);
+    int delta_j=abs(l - j);
+
+    if((delta_i==delta_j) or (delta_i==0 and delta_j!=0) or (delta_i!=0 and delta_j==0)) 
+    {
+        
+        int step_i=(k>i) ? 1 : ((k<i) ? -1 : 0);
+        int step_j=(l>j) ? 1 : ((l<j) ? -1 : 0);
+
+        for(int x=i+step_i,y=j+step_j;x!=k or y!=l;x+=step_i,y+=step_j) 
+        {
+            if(board[x][y]!=empty) 
+            {
+                cout<<"Invalid move\n";
+                return;
+            }
+        }
+
+        if(board[k][l]!=empty and board[k][l]!=sV) 
+        {
+            reposition(i,j,k,l,sV,(sV==white) ? whiteQueen : blackQueen);
+        } 
+        else if(board[k][l]==empty) 
+        {
+            reposition(i,j,k,l,sV,(sV==white) ? whiteQueen : blackQueen);
+        } 
+        else 
+        {
+            cout << "Invalid move\n"; 
+        }
+    } 
+    else 
+    {
+        cout<<"Invalid move\n"; 
+    }
 }
-void kingMove(int i,int j,int k,int l,squareValue sV)
+
+void kingMove(int i,int j,int k,int l,squareValue sV,string piece) 
 {
+    if(sV!=king) 
+    {
+        cout<<"Invalid piece\n";
+        return;
+    }
 
+    int delta_i=abs(k-i);
+    int delta_j=abs(l-j);
+
+    if(delta_i<=1 and delta_j<=1) 
+    {
+        if(board[k][l]!=empty and board[k][l]!=sV) 
+        {
+            reposition(i,j,k,l,sV,piece);
+        } 
+        else if(board[k][l]==empty) 
+        {
+            reposition(i,j,k,l,sV,piece);
+        } 
+        else  cout<<"Invalid move\n";
+    }
+    else  cout<<"Invalid move\n";
 }
+
 void checkPiece(int i,int j,int k,int l,squareValue sV)
 {
     if(sV==white)
     {
         if(defaultBoard[i][j]==whitePawn) 
+        {
             pawnMove(i,j,k,l,sV);
+        }
         else if(defaultBoard[i][j]==whiteRook) 
+        {
             rookMove(i,j,k,l,sV);
+        }
         else if(defaultBoard[i][j]==whiteKnight) 
+        {
             knightMove(i,j,k,l,sV);
-        else if(defaultBoard[i][j]==whiteBishop) 
+        }
+        else if(defaultBoard[i][j]==whiteBishop)
+        {
             bishopMove(i,j,k,l,sV);
+        } 
         else if(defaultBoard[i][j]==whiteQueen) 
+        {
             queenMove(i,j,k,l,sV);
+        }
         else if(defaultBoard[i][j]==whiteKing) 
-            kingMove(i,j,k,l,sV);
+        {
+            kingMove(i,j,k,l,sV,whiteKing);
+        }     
     }
     else if(sV==black)
     {
         if(defaultBoard[i][j]==blackPawn) 
+        {
             pawnMove(i,j,k,l,sV);
+        }
         else if(defaultBoard[i][j]==blackRook) 
+        {
             rookMove(i,j,k,l,sV);
+        }
         else if(defaultBoard[i][j]==blackKnight) 
+        {
             knightMove(i,j,k,l,sV);
+        }
         else if(defaultBoard[i][j]==blackBishop) 
+        {
             bishopMove(i,j,k,l,sV);
+        }
         else if(defaultBoard[i][j]==blackQueen) 
+        {
             queenMove(i,j,k,l,sV);
+        }    
         else if(defaultBoard[i][j]==blackKing) 
-            kingMove(i,j,k,l,sV);
+        {
+            kingMove(i,j,k,l,sV,blackKing);
+        }         
     }
-
 }
 /*void whitePrint(string str)
 {
@@ -315,7 +389,6 @@ void blackPrint(string str)
 
 void chessboard()
 {
-
     int i,j;
     for(i=0;i<boardSize;++i)
     {
@@ -365,6 +438,10 @@ void reverseCellAssist()
         cout<<endl;
     }
 }
+bool isEndGame()
+{
+    
+}
 void game()
 {
     int src,dest,count=1;
@@ -399,6 +476,7 @@ void game()
 }
 int main()
 {
+    system("chcp 65001");
     system("cls");
     game();
 }
