@@ -21,6 +21,13 @@ const string blackQueen="\u265B";
 const string whiteKing="\u2654";
 const string blackKing="\u265A";
 
+const int pawnValue=1;
+const int knightValue=3;
+const int bishopValue=3;
+const int rookValue=5;
+const int queenValue=9;
+
+
 enum squareValue
 {
     black,
@@ -29,7 +36,8 @@ enum squareValue
     king
 };
 
-vector<vector<squareValue>> board={
+vector<vector<squareValue>> board=
+{
     {black,black,black,black,king,black,black,black},
     {black,black,black,black,black,black,black,black},
     {emptys,emptys,emptys,emptys,emptys,emptys,emptys,emptys},
@@ -43,7 +51,8 @@ vector<vector<squareValue>> board={
 
 
 
- vector<vector<string>> defaultBoard={
+ vector<vector<string>> defaultBoard=
+ {
     {blackRook,blackKnight,blackBishop,blackQueen,blackKing,blackBishop,blackKnight,blackRook},
     {blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn,blackPawn},
     {" "," "," "," "," "," "," "," "},
@@ -553,6 +562,56 @@ void checkPiece(int i,int j,int k,int l,squareValue sV)
         }         
     }
 }
+int heuristic(squareValue sV)
+{
+    int i,j;
+    int state=0;
+    for(i=0;i<boardSize;++i)
+    {
+        for(j=0;j<boardSize;++j)
+        {
+            if(sV==white)
+            {
+                if(defaultBoard[i][j]==whitePawn)
+                {
+                    state+=pawnValue;
+                }
+                else if(defaultBoard[i][j]==whiteBishop)
+                {
+                    state+=bishopValue;
+                }
+                else if(defaultBoard[i][j]==whiteKnight)
+                {
+                    state+=knightValue;
+                }
+                else if(defaultBoard[i][j]==whiteQueen)
+                {
+                    state+=queenValue;
+                }
+            }
+            else if(sV==black)
+            {
+                if(defaultBoard[i][j]==blackPawn)
+                {
+                    state+=pawnValue;
+                }
+                else if(defaultBoard[i][j]==blackBishop)
+                {
+                    state+=bishopValue;
+                }
+                else if(defaultBoard[i][j]==blackKnight)
+                {
+                    state+=knightValue;
+                }
+                else if(defaultBoard[i][j]==blackQueen)
+                {
+                    state+=queenValue;
+                }
+            }
+        }
+    }
+    return state;
+}
 /*void whitePrint(string str)
 {
     cout<<"\033[0m  "<<str<<"  ";
@@ -696,5 +755,6 @@ int main()
 {
     system("chcp 65001");
     system("cls");
+    //cout<<heuristic(black)<<" "<<heuristic(white)<<endl;
     game();
 }
