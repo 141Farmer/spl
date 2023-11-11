@@ -1,6 +1,7 @@
 #include<iostream>
 #include<vector>
 #include<cstring>
+#include<cstdlib>
 #ifdef _WIN32
 #include<Windows.h>
 #endif
