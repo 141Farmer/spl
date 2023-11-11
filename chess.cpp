@@ -751,10 +751,25 @@ void game()
         }
     }
 }
+void consoleSet() 
+{
+    try 
+    {
+        system("chcp 65001");
+        #ifdef _WIN32
+            system("cls");  
+        #else
+            system("clear");  
+        #endif
+    }
+    catch(exception& e)
+    {
+
+    }
+}
 int main()
 {
-    system("chcp 65001");
-    system("cls");
+    consoleSet();
     //cout<<heuristic(black)<<" "<<heuristic(white)<<endl;
     game();
 }
