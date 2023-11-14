@@ -706,7 +706,7 @@ bool isEndGame()
 {
     
 }
-void game()
+void multiPlayer()
 {
     int src,dest,count=1;
     while(true)
@@ -752,6 +752,10 @@ void game()
         }
     }
 }
+void singlePlayer()
+{
+
+}
 void consoleSet() 
 {
     try 
@@ -768,9 +772,45 @@ void consoleSet()
 
     }
 }
-int main()
+
+
+void ui()
 {
     consoleSet();
+    cout<<"Enter choices:\n";
+    cout<<" 1. Single player against computer\n";
+    cout<<" 2. Multiplayer against another player\n";
+    cout<<" 3. exit\n";
+    int x;
+    try
+    {
+        cin>>x;
+    }
+    catch(const std::exception& e)
+    {
+
+    }
+    if(x==1)    
+    {
+        singlePlayer();
+    }
+    else if(x==2)       
+    {
+        multiPlayer();
+    }
+    else if(x==3)
+    {
+        return;
+    }
+    else
+    {
+        cout<<"Invalid choice\n";
+    }
+}
+int main()
+{
+    /*consoleSet();
     //cout<<heuristic(black)<<" "<<heuristic(white)<<endl;
-    game();
+    multiPlayer();*/
+    ui();
 }
