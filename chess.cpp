@@ -563,7 +563,16 @@ void checkPiece(int i,int j,int k,int l,squareValue sV)
         }         
     }
 }
-int heuristic(squareValue sV)
+
+
+
+
+
+
+
+
+
+int heuristic(squareValue sV,vector<vector<string>>defaultBoard)
 {
     int i,j;
     int state=0;
@@ -613,6 +622,25 @@ int heuristic(squareValue sV)
     }
     return state;
 }
+struct move
+{
+    int srcCell;
+    int destCell;
+    int nextHeuristicValue;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*void whitePrint(string str)
 {
     cout<<"\033[0m  "<<str<<"  ";
