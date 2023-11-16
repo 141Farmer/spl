@@ -71,14 +71,14 @@ void reposition(int i,int j,int k,int l,squareValue sV,string piece)
     defaultBoard[i][j]=" ";
     defaultBoard[k][l]=piece;
 }
-void pawnMove(int i,int j,int k,int l,squareValue sV) 
+bool pawnMove(int i,int j,int k,int l,squareValue sV) 
 {
     if(sV==white) 
     {
         if(defaultBoard[i][j]!=whitePawn) 
         {
-            cout<<"Invalid move\n";
-            return;
+            //cout<<"Invalid move\n";
+            return false;
         }
         int mD=-1; 
         if(board[k][l]==emptys) 
@@ -86,26 +86,26 @@ void pawnMove(int i,int j,int k,int l,squareValue sV)
             if(k==i+mD and l==j)
             {
                 reposition(i,j,k,l,sV,whitePawn);
-                return;
+                return true;
             }
             if(i==6 and k==i+2*mD and l==j and board[i+mD][j]==emptys) 
             {
                 reposition(i,j,k,l,sV,whitePawn);
-                return;
+                return true;
             }
         }
         if(k==i+mD and (l==j+1 or l==j-1) and board[k][l]==black) 
         {
             reposition(i,j,k,l,sV,whitePawn);
-            return;
+            return true;
         }
     } 
     else if(sV==black) 
     {
         if(defaultBoard[i][j]!=blackPawn) 
         {
-            cout<<"Invalid move\n";
-            return;
+            //cout<<"Invalid move\n";
+            return false;
         }
         int mD = 1;
         if(board[k][l]==emptys) 
@@ -113,29 +113,30 @@ void pawnMove(int i,int j,int k,int l,squareValue sV)
             if(k==i+mD and l==j) 
             {
                 reposition(i,j,k,l,sV,blackPawn);
-                return;
+                return true;
             }
             if(i==1 and k==i+2*mD and l==j and board[i+mD][j]==emptys) 
             {
                 reposition(i,j,k,l,sV,blackPawn);
-                return;
+                return true;
             }
         }
         if(k==i+mD and (l==j+1 or l==j-1) and board[k][l]==white) 
         {
             reposition(i,j,k,l,sV,blackPawn);
-            return;
+            return true;
         }
     }
-    cout<< "Invalid move\n";
+    //cout<< "Invalid move\n";
+    return false;
 }
 
-void rookMove(int i,int j,int k,int l,squareValue sV) 
+bool rookMove(int i,int j,int k,int l,squareValue sV) 
 {
     if(sV!=black and sV!=white) 
     {
-        cout<<"Invalid piece\n";
-        return;
+        //cout<<"Invalid piece\n";
+        return false;
     }
     if(i==k) 
     {
@@ -144,8 +145,8 @@ void rookMove(int i,int j,int k,int l,squareValue sV)
         {
             if(board[i][x]!=emptys)
             {
-                cout<<"Invalid move\n";
-                return;
+                //cout<<"Invalid move\n";
+                return true;
             }
         }
     } 
@@ -156,33 +157,36 @@ void rookMove(int i,int j,int k,int l,squareValue sV)
         {
             if(board[x][j]!=emptys) 
             {
-                cout <<"Invalid move\n";
-                return;
+                //cout <<"Invalid move\n";
+                return false;
             }
         }
     } 
     else 
     {
-        cout<<"Invalid move\n";
-        return;
+        //cout<<"Invalid move\n";
+        return false;
     }
     if(board[k][l]!=emptys and board[k][l]!=sV)
     {
         reposition(i,j,k,l,sV,(sV==white) ? whiteRook : blackRook);
+        return true;
     }
     else if(board[k][l]==emptys) 
     {
         reposition(i,j,k,l,sV,(sV == white) ? whiteRook : blackRook);
+        return true;
     }
-    else  cout<<"Invalid move\n";
+    //else  cout<<"Invalid move\n";
+    return false;
 }
 
-void knightMove(int i,int j,int k,int l,squareValue sV) 
+bool knightMove(int i,int j,int k,int l,squareValue sV) 
 {
     if(sV!=black and sV!=white) 
     {
-        cout<<"Invalid piece\n";
-        return;
+        //cout<<"Invalid piece\n";
+        return false;
     }
     int delta_i=abs(k-i);
     int delta_j=abs(l-j);
@@ -191,22 +195,30 @@ void knightMove(int i,int j,int k,int l,squareValue sV)
         if(board[k][l]!=emptys and board[k][l]!=sV) 
         {
             reposition(i,j,k,l,sV,(sV==white) ? whiteKnight : blackKnight);
+            return true;
         } 
         else if(board[k][l]==emptys) 
         {
             reposition(i,j,k,l,sV,(sV==white) ? whiteKnight : blackKnight);
+            return true;
         } 
-        else cout<<"Invalid move\n";
+        else 
+        {
+            //cout<<"Invalid move\n";
+            return false;
+        }
+
     } 
-    else  cout<<"Invalid move\n"; 
+   // else  cout<<"Invalid move\n"; 
+    return false;
 }
 
-void bishopMove(int i,int j,int k,int l,squareValue sV) 
+bool bishopMove(int i,int j,int k,int l,squareValue sV) 
 {
     if(sV!=black and sV!=white) 
     {
-        cout<<"Invalid piece\n";
-        return;
+        //cout<<"Invalid piece\n";
+        return false;
     }
     int delta_i=abs(k-i);
     int delta_j=abs(l-j);
@@ -218,29 +230,36 @@ void bishopMove(int i,int j,int k,int l,squareValue sV)
         {
             if (board[x][y]!=emptys) 
             {
-                cout<<"Invalid move\n";
-                return;
+                //cout<<"Invalid move\n";
+                return false;
             }
         }
         if(board[k][l]!=emptys and board[k][l]!=sV) 
         {
             reposition(i,j,k,l,sV,(sV == white) ? whiteBishop : blackBishop);
+            return true;
         } 
         else if(board[k][l]==emptys) 
         {
             reposition(i,j,k,l,sV,(sV == white) ? whiteBishop : blackBishop);
+            return true;
         } 
-        else   cout << "Invalid move\n";
+        else   
+        {
+            //cout << "Invalid move\n";
+            return false;
+        }
     } 
-    else   cout << "Invalid move\n"; 
+    ///else   cout << "Invalid move\n"; 
+    return false;
 }
 
-void queenMove(int i,int j,int k,int l,squareValue sV) 
+bool queenMove(int i,int j,int k,int l,squareValue sV) 
 {
     if(sV!=black and sV!=white) 
     {
-        cout<<"Invalid piece\n";
-        return;
+        //cout<<"Invalid piece\n";
+        return false;
     }
 
     int delta_i=abs(k - i);
@@ -256,36 +275,40 @@ void queenMove(int i,int j,int k,int l,squareValue sV)
         {
             if(board[x][y]!=emptys) 
             {
-                cout<<"Invalid move\n";
-                return;
+               // cout<<"Invalid move\n";
+                return false;
             }
         }
 
         if(board[k][l]!=emptys and board[k][l]!=sV) 
         {
             reposition(i,j,k,l,sV,(sV==white) ? whiteQueen : blackQueen);
+            return true;
         } 
         else if(board[k][l]==emptys) 
         {
             reposition(i,j,k,l,sV,(sV==white) ? whiteQueen : blackQueen);
+            return true;
         } 
         else 
         {
-            cout << "Invalid move\n"; 
+            //cout << "Invalid move\n"; 
+            return false;
         }
     } 
     else 
     {
-        cout<<"Invalid move\n"; 
+        //cout<<"Invalid move\n"; 
     }
+    return false;
 }
 
-void kingMove(int i,int j,int k,int l,squareValue sV,string piece) 
+bool kingMove(int i,int j,int k,int l,squareValue sV,string piece) 
 {
     if(sV!=king) 
     {
-        cout<<"Invalid piece\n";
-        return;
+        //cout<<"Invalid piece\n";
+        return false;
     }
 
     int delta_i=abs(k-i);
@@ -296,14 +319,22 @@ void kingMove(int i,int j,int k,int l,squareValue sV,string piece)
         if(board[k][l]!=emptys and board[k][l]!=sV) 
         {
             reposition(i,j,k,l,sV,piece);
+            return true;
         } 
         else if(board[k][l]==emptys) 
         {
             reposition(i,j,k,l,sV,piece);
+            return true;
         } 
-        else  cout<<"Invalid move\n";
+        else  
+        {
+            //cout<<"Invalid move\n";
+            return false;
+        }
+
     }
-    else  cout<<"Invalid move\n";
+    //else  cout<<"Invalid move\n";
+    return false;
 }
 
 
@@ -506,66 +537,117 @@ bool isCheck(int i,int j,squareValue sV)
     return false;
 }
 
-void checkPiece(int i,int j,int k,int l,squareValue sV)
+bool checkPiece(int i,int j,int k,int l,squareValue sV)
 {
     if(sV==white)
     {
         if(defaultBoard[i][j]==whitePawn) 
         {
-            pawnMove(i,j,k,l,sV);
+            return pawnMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==whiteRook) 
         {
-            rookMove(i,j,k,l,sV);
+            return rookMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==whiteKnight) 
         {
-            knightMove(i,j,k,l,sV);
+            return knightMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==whiteBishop)
         {
-            bishopMove(i,j,k,l,sV);
+            return bishopMove(i,j,k,l,sV);
         } 
         else if(defaultBoard[i][j]==whiteQueen) 
         {
-            queenMove(i,j,k,l,sV);
+            return queenMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==whiteKing) 
         {
-            kingMove(i,j,k,l,sV,whiteKing);
-        }     
+            return kingMove(i,j,k,l,sV,whiteKing);
+        }   
+        return false;  
     }
     else if(sV==black)
     {
         if(defaultBoard[i][j]==blackPawn) 
         {
-            pawnMove(i,j,k,l,sV);
+            return pawnMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==blackRook) 
         {
-            rookMove(i,j,k,l,sV);
+            return rookMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==blackKnight) 
         {
-            knightMove(i,j,k,l,sV);
+            return knightMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==blackBishop) 
         {
-            bishopMove(i,j,k,l,sV);
+            return bishopMove(i,j,k,l,sV);
         }
         else if(defaultBoard[i][j]==blackQueen) 
         {
-            queenMove(i,j,k,l,sV);
+            return queenMove(i,j,k,l,sV);
         }    
         else if(defaultBoard[i][j]==blackKing) 
         {
-            kingMove(i,j,k,l,sV,blackKing);
-        }         
+            return kingMove(i,j,k,l,sV,blackKing);
+        }     
+        return false;    
     }
+    return false;
 }
 
+void showMove(int i,int j,squareValue sV)
+{
+    vector<vector<string>>defaultBoardTemporary=defaultBoard;
+    vector<vector<squareValue>>boardTemporary=board;
+    if(sV==white)
+    {
+        for(int k=0;k<boardSize;++k)
+        {
+            for(int l=0;l<boardSize;++l)
+            {
+                if(checkPiece(i,j,k,l,sV))
+                {
+                    cout<<k<<l<<" ";
+                }
+                else
+                {
+                    cout<<"   ";
+                }
+                board=boardTemporary;
+                defaultBoard=defaultBoardTemporary;
+            }
+            cout<<endl;
+        }   
+    }
+    else if(sV==black)
+    {
+        for(int k=boardSize-1;k>=0;--k)
+        {
+            for(int l=boardSize-1;l>=0;--l)
+            {
+                if(checkPiece(i,j,k,l,sV))
+                {
+                    cout<<k<<l<<" ";
+                }
+                else
+                {
+                    cout<<"   ";
+                }
+                board=boardTemporary;
+                defaultBoard=defaultBoardTemporary;
+            }
+            cout<<endl;
+        }
+    }
+    cout<<endl;
+    board=boardTemporary;
+    defaultBoard=defaultBoardTemporary;
 
 
+}
 
 
 
@@ -734,7 +816,80 @@ bool isEndGame()
 {
     
 }
-void multiPlayer()
+void multiPlayer2()
+{
+    int src,dest,count=1;
+    while(true)
+    {
+        if(count&1) 
+        {
+            //system("cls");
+            chessboard();
+            cellAssist();
+        }
+        else 
+        {
+            reverseChessboard();
+            reverseCellAssist();
+        }
+        cout<<"Enter cell of piece\n";
+        cin>>src;
+        int i=src/10;
+        int j=src%10;
+        vector<vector<string>>defaultBoardTemporary=defaultBoard;
+        if(count & 1) 
+        {
+            /*checkPiece(i,j,k,white);
+            if(isCheck(k,l,white)) 
+            {
+                cout<<"\nWhite side is being checked\n";
+            }*/
+            showMove(i,j,white);
+            cout<<"Enter your destination cell\n";
+            cin>>dest;
+            int k=dest/10;
+            int l=dest%10;
+            if(!checkPiece(i,j,k,l,white))
+            {
+                cout<<"Invalid move\n";
+               // --count;
+                continue;
+            }
+            if(isCheck(k,l,white)) 
+            {
+                cout<<"\nWhite side is being checked\n";
+            }
+
+        }
+        else 
+        {
+            showMove(i,j,black);
+            cout<<"Enter your destination cell\n";
+            cin>>dest;
+            int k=dest/10;
+            int l=dest%10;
+            if(!checkPiece(i,j,k,l,black))
+            {
+                cout<<"Invalid move\n";
+                //--count;
+                continue;
+            }
+            if(isCheck(k,l,black)) 
+            {
+                cout<<"\nBlack side is being checked\n";
+            }
+
+        }
+        ++count;
+        if(count==50)
+        {
+            cout<<"Match drawn \n";
+            break;
+        }
+    }
+}
+
+void multiPlayer1()
 {
     int src,dest,count=1;
     while(true)
@@ -824,7 +979,7 @@ void ui()
     }
     else if(x==2)       
     {
-        multiPlayer();
+        multiPlayer2();
     }
     else if(x==3)
     {
