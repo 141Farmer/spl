@@ -2,6 +2,9 @@
 #include<vector>
 #include<cstring>
 #include<cstdlib>
+#include<climits>
+#include<algorithm>
+#include<tuple>
 #ifdef _WIN32
 #include<Windows.h>
 #endif
@@ -654,7 +657,7 @@ void showMove(int i,int j,squareValue sV)
 
 
 
-int heuristic(squareValue sV,vector<vector<string>>defaultBoard)
+int heuristicFunction(squareValue sV)
 {
     int i,j;
     int state=0;
@@ -712,7 +715,45 @@ struct move
 };
 
 
+tuple<int,int,int> minimax(squareValue sV)
+{
+    vector<vector<string>>defaultBoardTemporary=defaultBoard;
+    vector<vector<squareValue>>boardTemporary=board;
+    vector<tuple<int,int,int>> allMoves;
+    int maxHeuristic=INT_MIN;
+    int i,j,k,l;
+    for(i=0;i<boardSize;++i)
+    {
+        for(j=0;j<boardSize;++j)
+        {
+            if(board[i][j]==sV)
+            {
+                for(k=0;k<boardSize;++k)
+                {
+                    for(l=0;l<boardSize;++l)
+                    {
+                        if(checkPiece(i,j,k,l,sV))
+                        {
+                            int heuristic=heuristicFunction(sV);
+                            allMoves.push_back(make_tuple(i*10+j,k*10+l,heuristic));
+                        }
+                        defaultBoard=defaultBoardTemporary;
+                        board=boardTemporary;
+                    }
+                }
+            }
+        }
+    }
+    defaultBoard=defaultBoardTemporary;
+    board=boardTemporary;
+    auto minElement=*min_element(allMoves.begin(),allMoves.end(),
+                                                                [](auto a,auto b) 
+                                                                {
+                                                                    return get<2>(a) < get<2>(b);
+                                                                });
+    return minElement;
 
+}
 
 
 
@@ -937,6 +978,66 @@ void multiPlayer1()
 }
 void singlePlayer()
 {
+    int src,dest,count=1;
+    while(true)
+    {
+        if(count & 1) 
+        {
+            //system("cls");
+            chessboard();
+            cellAssist();
+        }
+        else 
+        {
+            reverseChessboard();
+            reverseCellAssist();
+        }
+        vector<vector<string>>defaultBoardTemporary=defaultBoard;
+        if(count & 1) 
+        {
+            /*checkPiece(i,j,k,white);
+            if(isCheck(k,l,white)) 
+            {
+                cout<<"\nWhite side is being checked\n";
+            }*/
+            cout<<"Enter cell of piece\n";
+            cin>>src;
+            int i=src/10;
+            int j=src%10;
+            showMove(i,j,white);
+            cout<<"Enter your destination cell\n";
+            cin>>dest;
+            int k=dest/10;
+            int l=dest%10;
+            if(!checkPiece(i,j,k,l,white))
+            {
+                cout<<"Invalid move\n";
+               // --count;
+                continue;
+            }
+            if(isCheck(k,l,white)) 
+            {
+                cout<<"\nWhite side is being checked\n";
+            }
+
+        }
+        else 
+        {
+            tuple<int,int,int> move=minimax(black);
+            int i=get<0>(move)/10;
+            int j=get<0>(move)%10;
+            int k=get<1>(move)/10;
+            int l=get<1>(move)%10;
+            checkPiece(i,j,k,l,black);
+        }
+        ++count;
+        if(count==50)
+        {
+            cout<<"Match drawn \n";
+            break;
+        }
+    }
+    
 
 }
 void consoleSet() 
