@@ -760,10 +760,6 @@ tuple<int,int,int> minimax(squareValue sV)
 
 
 
-
-
-
-
 /*void whitePrint(string str)
 {
     cout<<"\033[0m  "<<str<<"  ";
