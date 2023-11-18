@@ -864,7 +864,7 @@ void multiPlayer2()
     {
         if(count&1) 
         {
-            //system("cls");
+
             chessboard();
             cellAssist();
         }
@@ -880,11 +880,6 @@ void multiPlayer2()
         vector<vector<string>>defaultBoardTemporary=defaultBoard;
         if(count & 1) 
         {
-            /*checkPiece(i,j,k,white);
-            if(isCheck(k,l,white)) 
-            {
-                cout<<"\nWhite side is being checked\n";
-            }*/
             showMove(i,j,white);
             cout<<"Enter your destination cell\n";
             cin>>dest;
@@ -893,7 +888,7 @@ void multiPlayer2()
             if(!checkPiece(i,j,k,l,white))
             {
                 cout<<"Invalid move\n";
-               // --count;
+
                 continue;
             }
             if(isCheck(k,l,white)) 
@@ -912,7 +907,7 @@ void multiPlayer2()
             if(!checkPiece(i,j,k,l,black))
             {
                 cout<<"Invalid move\n";
-                //--count;
+
                 continue;
             }
             if(isCheck(k,l,black)) 
@@ -937,7 +932,7 @@ void multiPlayer1()
     {
         if(count&1) 
         {
-            //system("cls");
+
             chessboard();
             cellAssist();
         }
@@ -978,12 +973,35 @@ void multiPlayer1()
 }
 void singlePlayer()
 {
-    int src,dest,count=1;
+    int src,dest,side,count;
+    cout<<"Choose your side\n";
+    cout<<"\n 1. White\n";
+    cout<<" 2. Black\n";
+    try
+    {
+        cin>>side;
+    }
+    catch(exception& e)
+    {
+        
+    }
+    if(side==1)
+    {
+        count=1;
+    }
+    else if(side==2)
+    {
+        count=0;
+    }
+    else
+    {
+        cout<<"Invalid option\n";
+        return;
+    }
     while(true)
     {
         if(count & 1) 
         {
-            //system("cls");
             chessboard();
             cellAssist();
         }
@@ -1058,7 +1076,7 @@ void consoleSet()
 }
 
 
-void ui()
+int ui()
 {
     consoleSet();
     cout<<"Enter choices:\n";
@@ -1070,7 +1088,7 @@ void ui()
     {
         cin>>x;
     }
-    catch(const std::exception& e)
+    catch(exception& e)
     {
 
     }
@@ -1084,17 +1102,27 @@ void ui()
     }
     else if(x==3)
     {
-        return;
+        return 0;
     }
     else
     {
         cout<<"Invalid choice\n";
+        return -1;
     }
+}
+int startGame()
+{
+    while(ui())
+    {
+
+    }
+    return 0;
 }
 int main()
 {
     /*consoleSet();
     //cout<<heuristic(black)<<" "<<heuristic(white)<<endl;
     multiPlayer();*/
-    ui();
+    //ui();
+    return startGame();
 }
