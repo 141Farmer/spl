@@ -1086,7 +1086,7 @@ int ui()
     }
     catch(exception& e)
     {
-
+        
     }
     if(x==1)    
     {
@@ -1116,9 +1116,9 @@ int startGame()
 }
 int main()
 {
-    /*consoleSet();
+    //consoleSet();
     //cout<<heuristic(black)<<" "<<heuristic(white)<<endl;
-    multiPlayer();*/
+    //multiPlayer();
     //ui();
     return startGame();
 }
