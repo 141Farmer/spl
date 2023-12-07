@@ -611,13 +611,17 @@ void showMove(int i,int j,squareValue sV)
         {
             for(int l=0;l<boardSize;++l)
             {
-                if(checkPiece(i,j,k,l,sV))
+                if(i==k and j==l)
+                {
+                    cout<<i<<j<<" ";
+                }
+                else if(checkPiece(i,j,k,l,sV))
                 {
                     cout<<k<<l<<" ";
                 }
                 else
                 {
-                    cout<<"   ";
+                    cout<<" | ";
                 }
                 board=boardTemporary;
                 defaultBoard=defaultBoardTemporary;
@@ -631,13 +635,17 @@ void showMove(int i,int j,squareValue sV)
         {
             for(int l=boardSize-1;l>=0;--l)
             {
-                if(checkPiece(i,j,k,l,sV))
+                if(i==k and j==l)
+                {
+                    cout<<i<<j<<" ";
+                }
+                else if(checkPiece(i,j,k,l,sV))
                 {
                     cout<<k<<l<<" ";
                 }
                 else
                 {
-                    cout<<"   ";
+                    cout<<" | ";
                 }
                 board=boardTemporary;
                 defaultBoard=defaultBoardTemporary;
@@ -755,6 +763,22 @@ tuple<int,int,int> minimax(squareValue sV)
 
 }
 
+int fast_mod(int number,int divider)
+{
+    if(number==divider) 
+    {
+        return 1;
+    }
+    else if(number<divider)
+    {
+        return number;
+    }
+    else if(!(divider & (divider-1)))
+    {
+        return number & divider-1;
+    }
+    return number%divider;
+}
 
 
 
@@ -846,7 +870,14 @@ void reverseCellAssist()
     }
 }
 
-
+void pressAnyKey(string str)
+{
+    cout<<str<<"....";
+    cout.flush();
+    cin.ignore(numeric_limits<streamsize>::max(),'\n');
+    cin.get();
+    cout<<endl<<endl<<endl;
+}
 
 
 bool isEndGame()
@@ -872,7 +903,7 @@ void multiPlayer2()
         cout<<"Enter cell of piece\n";
         cin>>src;
         int i=src/10;
-        int j=src%10;
+        int j=fast_mod(src,10);
         vector<vector<string>>defaultBoardTemporary=defaultBoard;
         if(count & 1) 
         {
@@ -880,7 +911,7 @@ void multiPlayer2()
             cout<<"Enter your destination cell\n";
             cin>>dest;
             int k=dest/10;
-            int l=dest%10;
+            int l=fast_mod(dest,10);
             if(!checkPiece(i,j,k,l,white))
             {
                 cout<<"Invalid move\n";
@@ -891,7 +922,8 @@ void multiPlayer2()
             {
                 cout<<"\nWhite side is being checked\n";
             }
-
+            chessboard();
+            pressAnyKey("Press any key to switch sides");
         }
         else 
         {
@@ -899,7 +931,7 @@ void multiPlayer2()
             cout<<"Enter your destination cell\n";
             cin>>dest;
             int k=dest/10;
-            int l=dest%10;
+            int l=fast_mod(dest,10);
             if(!checkPiece(i,j,k,l,black))
             {
                 cout<<"Invalid move\n";
@@ -910,6 +942,8 @@ void multiPlayer2()
             {
                 cout<<"\nBlack side is being checked\n";
             }
+            reverseChessboard();
+            pressAnyKey("Press any key to switch sides");
 
         }
         ++count;
@@ -940,9 +974,9 @@ void multiPlayer1()
         cout<<"Enter source cell and destination cell\n";
         cin>>src>>dest;
         int i=src/10;
-        int j=src%10;
+        int j=fast_mod(src,10);
         int k=dest/10;
-        int l=dest%10;
+        int l=fast_mod(dest,10);
         if(count & 1) 
         {
             checkPiece(i,j,k,l,white);
@@ -1017,12 +1051,12 @@ void singlePlayer()
             cout<<"Enter cell of piece\n";
             cin>>src;
             int i=src/10;
-            int j=src%10;
+            int j=fast_mod(src,10);
             showMove(i,j,white);
             cout<<"Enter your destination cell\n";
             cin>>dest;
             int k=dest/10;
-            int l=dest%10;
+            int l=fast_mod(dest,10);
             if(!checkPiece(i,j,k,l,white))
             {
                 cout<<"Invalid move\n";
@@ -1039,9 +1073,9 @@ void singlePlayer()
         {
             tuple<int,int,int> move=minimax(black);
             int i=get<0>(move)/10;
-            int j=get<0>(move)%10;
+            int j=fast_mod(get<0>(move),10);
             int k=get<1>(move)/10;
-            int l=get<1>(move)%10;
+            int l=fast_mod(get<1>(move),10);
             checkPiece(i,j,k,l,black);
         }
         ++count;
@@ -1079,6 +1113,7 @@ int ui()
     cout<<" 1. Single player against computer\n";
     cout<<" 2. Multiplayer against another player\n";
     cout<<" 3. exit\n";
+    cout<<endl<<endl<<endl<<endl;
     int x;
     try
     {
@@ -1090,10 +1125,12 @@ int ui()
     }
     if(x==1)    
     {
+        consoleSet();
         singlePlayer();
     }
     else if(x==2)       
     {
+        consoleSet();
         multiPlayer2();
     }
     else if(x==3)
@@ -1120,5 +1157,8 @@ int main()
     //cout<<heuristic(black)<<" "<<heuristic(white)<<endl;
     //multiPlayer();
     //ui();
+    //cout<<fast_mod(101,10)<<endl;
+    //cout<<fast_mod(102,10)<<endl;
+    //cout<<fast_mod(100,10)<<endl;
     return startGame();
 }
