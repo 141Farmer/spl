@@ -74,65 +74,63 @@ void reposition(int i,int j,int k,int l,squareValue sV,string piece)
     defaultBoard[i][j]=" ";
     defaultBoard[k][l]=piece;
 }
-bool pawnMove(int i,int j,int k,int l,squareValue sV) 
+
+
+bool pawnMove(int i, int j, int k, int l, squareValue sV) 
 {
-    if(sV==white) 
+    if(i==k and j==l)
     {
-        if(defaultBoard[i][j]!=whitePawn) 
+        return false;
+    }
+    const int whiteStartingRow = 6;
+    const int blackStartingRow = 1;
+    const int moveDirectionWhite = -1;
+    const int moveDirectionBlack = 1;
+    const int doubleMoveRowThreshold = 1;
+
+    int moveDirection;
+    int startingRow;
+
+    if (sV == white) 
+    {
+        moveDirection = moveDirectionWhite;
+        startingRow = whiteStartingRow;
+    } 
+    else 
+    {
+        moveDirection = moveDirectionBlack;
+        startingRow = blackStartingRow;
+    }
+
+    if (defaultBoard[i][j] != (sV == white ? whitePawn : blackPawn)) 
+    {
+        // Invalid move
+        return false;
+    }
+
+    if (board[k][l] == emptys) 
+    {
+        if (k == i + moveDirection && l == j) 
         {
-            //cout<<"Invalid move\n";
-            return false;
-        }
-        int mD=-1; 
-        if(board[k][l]==emptys) 
-        {
-            if(k==i+mD and l==j)
-            {
-                reposition(i,j,k,l,sV,whitePawn);
-                return true;
-            }
-            if(i==6 and k==i+2*mD and l==j and board[i+mD][j]==emptys) 
-            {
-                reposition(i,j,k,l,sV,whitePawn);
-                return true;
-            }
-        }
-        if(k==i+mD and (l==j+1 or l==j-1) and board[k][l]==black) 
-        {
-            reposition(i,j,k,l,sV,whitePawn);
             return true;
         }
-    } 
-    else if(sV==black) 
-    {
-        if(defaultBoard[i][j]!=blackPawn) 
+
+        if (i == startingRow && k == i + 2 * moveDirection && l == j && board[i + moveDirection][j] == emptys) 
         {
-            //cout<<"Invalid move\n";
-            return false;
-        }
-        int mD = 1;
-        if(board[k][l]==emptys) 
-        {
-            if(k==i+mD and l==j) 
-            {
-                reposition(i,j,k,l,sV,blackPawn);
-                return true;
-            }
-            if(i==1 and k==i+2*mD and l==j and board[i+mD][j]==emptys) 
-            {
-                reposition(i,j,k,l,sV,blackPawn);
-                return true;
-            }
-        }
-        if(k==i+mD and (l==j+1 or l==j-1) and board[k][l]==white) 
-        {
-            reposition(i,j,k,l,sV,blackPawn);
             return true;
         }
     }
-    //cout<< "Invalid move\n";
+
+    if (k == i + moveDirection && (l == j + 1 || l == j - 1) && board[k][l] == (sV == white ? black : white)) 
+    {
+        return true;
+    }
+
+    // Invalid move
     return false;
 }
+
+
 
 bool rookMove(int i,int j,int k,int l,squareValue sV) 
 {
@@ -740,27 +738,40 @@ tuple<int,int,int> minimax(squareValue sV)
                 {
                     for(l=0;l<boardSize;++l)
                     {
-                        if(checkPiece(i,j,k,l,sV))
+                        try
                         {
-                            int heuristic=heuristicFunction(sV);
-                            allMoves.push_back(make_tuple(i*10+j,k*10+l,heuristic));
+                            //cout<<"b4check\n";
+                            if(checkPiece(i,j,k,l,sV))
+                            {
+                                //cout<<"b4heu\n";
+                                int heuristic=heuristicFunction(sV);
+                                //cout<<"b4push\n";
+                                allMoves.push_back(make_tuple(i*10+j,k*10+l,heuristic));
+                            }
+                            //cout<<"b4swap\n";
+                            defaultBoard=defaultBoardTemporary;
+                            board=boardTemporary;
                         }
-                        defaultBoard=defaultBoardTemporary;
-                        board=boardTemporary;
+                        catch(exception e)
+                        {
+
+                        }
                     }
                 }
             }
         }
     }
+    //cout<<"b4swap2\n";
     defaultBoard=defaultBoardTemporary;
     board=boardTemporary;
+    //cout<<"b4lamda\n";
     auto minElement=*min_element(allMoves.begin(),allMoves.end(),
                                                                 [](auto a,auto b) 
                                                                 {
                                                                     return get<2>(a) < get<2>(b);
                                                                 });
+    //cout<<"b4return\n";
     return minElement;
-
 }
 
 int fast_mod(int number,int divider)
@@ -914,6 +925,8 @@ void multiPlayer2()
             int l=fast_mod(dest,10);
             if(!checkPiece(i,j,k,l,white))
             {
+                string piece=defaultBoard[i][j];
+                reposition(i,j,k,l,white,piece);
                 cout<<"Invalid move\n";
 
                 continue;
@@ -923,7 +936,7 @@ void multiPlayer2()
                 cout<<"\nWhite side is being checked\n";
             }
             chessboard();
-            pressAnyKey("Press any key to switch sides");
+            pressAnyKey("Press enter to switch sides");
         }
         else 
         {
