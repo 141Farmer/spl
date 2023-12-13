@@ -39,6 +39,31 @@ enum squareValue
     king
 };
 
+/*vector<vector<squareValue>> board =
+    {
+        {black, black, black, black, king, black, black, black},
+        {black, black, black, black, black, black, black, black},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {white, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys}
+    };
+
+vector<vector<string>> defaultBoard =
+    {
+        {blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop, blackKnight, blackRook},
+        {blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {whitePawn, " ", " ", " ", " ", " ", " ", " "," "},
+        {" ", " ", " ", " "," ", " ", " ", " "}
+    };
+
+*/
 vector<vector<squareValue>> board =
     {
         {black, black, black, black, king, black, black, black},
@@ -48,7 +73,8 @@ vector<vector<squareValue>> board =
         {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
         {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
         {white, white, white, white, white, white, white, white},
-        {white, white, white, white, king, white, white, white}};
+        {white, white, white, white, king, white, white, white}
+    };
 
 vector<vector<string>> defaultBoard =
     {
@@ -59,7 +85,8 @@ vector<vector<string>> defaultBoard =
         {" ", " ", " ", " ", " ", " ", " ", " "},
         {" ", " ", " ", " ", " ", " ", " ", " "},
         {whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn},
-        {whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop, whiteKnight, whiteRook}};
+        {whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop, whiteKnight, whiteRook}
+    };
 
 void reposition(int i, int j, int k, int l, squareValue sV, string piece)
 {
@@ -694,7 +721,7 @@ int heuristicFunction(squareValue sV)
     return state;
 }
 
-tuple<int, int, int> minimax(squareValue sV)
+vector<tuple<int, int, int>> minimax(squareValue sV)
 {
     vector<vector<string>> defaultBoardTemporary = defaultBoard;
     vector<vector<squareValue>> boardTemporary = board;
@@ -711,12 +738,16 @@ tuple<int, int, int> minimax(squareValue sV)
                 {
                     for (l = 0; l < boardSize; ++l)
                     {
+                        if(board[k][l]==sV)
+                        {
+                            continue;
+                        }
                         try
                         {
                             // cout<<"b4check\n";
                             if (checkPiece(i, j, k, l, sV))
                             {
-                                // cout<<"b4heu\n";
+                                reposition(i,j,k,l,sV,defaultBoard[i][j]);
                                 int heuristic = heuristicFunction(sV);
                                 // cout<<"b4push\n";
                                 allMoves.push_back(make_tuple(i * 10 + j, k * 10 + l, heuristic));
@@ -738,6 +769,12 @@ tuple<int, int, int> minimax(squareValue sV)
     defaultBoard = defaultBoardTemporary;
     board = boardTemporary;
     // cout<<"b4lamda\n";
+    return allMoves;
+}
+
+
+tuple<int,int,int> bestMove(vector<tuple<int,int,int>>  allMoves)
+{
     try
     {
         auto minElement = *min_element(allMoves.begin(), allMoves.end(),
@@ -755,6 +792,11 @@ tuple<int, int, int> minimax(squareValue sV)
         // Return a default value or handle the exception as needed
         return std::make_tuple(0, 0, 0); // Replace with an appropriate default tuple
     }
+}
+tuple<int,int,int> gameMove(squareValue sV)
+{
+    vector<tuple<int, int, int>>allMoves=minimax(sV);
+    return bestMove(allMoves);
 }
 
 int fast_mod(int number, int divider)
@@ -774,22 +816,31 @@ int fast_mod(int number, int divider)
     return number % divider;
 }
 
-/*void whitePrint(string str)
+void blackPrint(string str)
+{
+    cout << "\033[0;100m  " << str << "   \033[0m";
+}
+
+void whitePrint(string str)
+{
+    cout << "\033[1;97m  " << str << "   \033[0m";
+}
+/*void whitePrint(string str)   //0 cross
 {
     cout<<"\033[0m  "<<str<<"  ";
-}
-/*void blackPrint(string str)
+}*/
+/*void blackPrint(string str)   //0 cross
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
     cout<<"  "<<str<<"  ";
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 }*/
-/*=void blackPrint(string str)
+/*void blackPrint(string str)  //2
 {
     cout<<"\033[0;100m"<<str<<" \033[0m";
-}*/
+}
 
-void printWithColor(string str, int textColor, int bgColor)
+void printWithColor(string str, int textColor, int bgColor)     //1
 {
 #ifdef _WIN32
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), textColor | (bgColor << 4));
@@ -798,15 +849,15 @@ void printWithColor(string str, int textColor, int bgColor)
 #endif
 }
 
-void whitePrint(string str)
+void whitePrint(string str)     //1
 {
     printWithColor(str, 15, 0);
 }
 
-void blackPrint(string str)
+/*void blackPrint(string str)     //1
 {
     printWithColor(str, 0, 15);
-}
+}*/
 
 void chessboard()
 {
@@ -882,7 +933,7 @@ void pressAnyKey(string str)
 {
     cout << str << "....";
     cout.flush();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    //cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
     cout << endl
          << endl
@@ -968,9 +1019,9 @@ void multiPlayer2()
             chessboard();
             pressAnyKey("Press enter to switch sides");
         }
-        catch (const std::exception &e)
+        catch (const exception &e)
         {
-            std::cerr << e.what() << '\n';
+            cerr << e.what() << '\n';
             continue;
         }
 
@@ -998,7 +1049,14 @@ void singlePlayer()
         {
             return;
         }
-        count = (side == "1") ? 1 : 0;
+        if(side=="1")
+        {
+            count=1;
+        }
+        else
+        {
+            count=0;
+        }
     }
     catch (const std::exception &e)
     {
@@ -1020,7 +1078,6 @@ void singlePlayer()
         }
 
         vector<vector<string>> defaultBoardTemporary = defaultBoard;
-        // Inside the if(count & 1) block
         if (count & 1)
         {
             cout << "Enter cell of piece\n";
@@ -1066,6 +1123,11 @@ void singlePlayer()
                     cout << "Invalid move\n";
                     continue;
                 }
+                else
+                {
+                    string piece=defaultBoard[i][j];
+                    reposition(i,j,k,l,white,piece); 
+                }
 
                 if (isCheck(k, l, white))
                 {
@@ -1081,12 +1143,13 @@ void singlePlayer()
 
         else
         {
-            tuple<int, int, int> move = minimax(black);
+            tuple<int, int, int> move = gameMove(black);
             int i = get<0>(move) / 10;
             int j = fast_mod(get<0>(move), 10);
             int k = get<1>(move) / 10;
             int l = fast_mod(get<1>(move), 10);
-            checkPiece(i, j, k, l, black);
+            string piece=defaultBoard[i][j];
+            reposition(i,j,k,l,black,piece);
         }
 
         ++count;
@@ -1173,4 +1236,5 @@ int main()
     // cout<<fast_mod(102,10)<<endl;
     // cout<<fast_mod(100,10)<<endl;
     return startGame();
+
 }
