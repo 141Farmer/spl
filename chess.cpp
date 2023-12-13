@@ -88,6 +88,35 @@ vector<vector<string>> defaultBoard =
         {whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop, whiteKnight, whiteRook}
     };
 
+void restartTileBoard()
+{
+    board =
+    {
+        {black, black, black, black, king, black, black, black},
+        {black, black, black, black, black, black, black, black},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {emptys, emptys, emptys, emptys, emptys, emptys, emptys, emptys},
+        {white, white, white, white, white, white, white, white},
+        {white, white, white, white, king, white, white, white}
+    };
+}
+void restartChessBoard()
+{
+    defaultBoard=
+    {
+        {blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop, blackKnight, blackRook},
+        {blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn, blackPawn},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {" ", " ", " ", " ", " ", " ", " ", " "},
+        {whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn, whitePawn},
+        {whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop, whiteKnight, whiteRook}
+    };
+}
+
 void reposition(int i, int j, int k, int l, squareValue sV, string piece)
 {
     board[i][j] = emptys;
@@ -738,7 +767,7 @@ vector<tuple<int, int, int>> minimax(squareValue sV)
                 {
                     for (l = 0; l < boardSize; ++l)
                     {
-                        if(board[k][l]==sV)
+                        if (board[k][l] == sV)
                         {
                             continue;
                         }
@@ -747,7 +776,7 @@ vector<tuple<int, int, int>> minimax(squareValue sV)
                             // cout<<"b4check\n";
                             if (checkPiece(i, j, k, l, sV))
                             {
-                                reposition(i,j,k,l,sV,defaultBoard[i][j]);
+                                reposition(i, j, k, l, sV, defaultBoard[i][j]);
                                 int heuristic = heuristicFunction(sV);
                                 // cout<<"b4push\n";
                                 allMoves.push_back(make_tuple(i * 10 + j, k * 10 + l, heuristic));
@@ -772,8 +801,7 @@ vector<tuple<int, int, int>> minimax(squareValue sV)
     return allMoves;
 }
 
-
-tuple<int,int,int> bestMove(vector<tuple<int,int,int>>  allMoves)
+tuple<int, int, int> bestMove(vector<tuple<int, int, int>> allMoves)
 {
     try
     {
@@ -793,9 +821,9 @@ tuple<int,int,int> bestMove(vector<tuple<int,int,int>>  allMoves)
         return std::make_tuple(0, 0, 0); // Replace with an appropriate default tuple
     }
 }
-tuple<int,int,int> gameMove(squareValue sV)
+tuple<int, int, int> gameMove(squareValue sV)
 {
-    vector<tuple<int, int, int>>allMoves=minimax(sV);
+    vector<tuple<int, int, int>> allMoves = minimax(sV);
     return bestMove(allMoves);
 }
 
@@ -933,7 +961,7 @@ void pressAnyKey(string str)
 {
     cout << str << "....";
     cout.flush();
-    //cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    // cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
     cout << endl
          << endl
@@ -1038,7 +1066,7 @@ void singlePlayer()
 {
     string src, dest, side;
     int count;
-
+    squareValue player, computer;
     cout << "Choose your side\n";
     cout << "\n 1. White\n";
     cout << " 2. Black\n";
@@ -1049,16 +1077,25 @@ void singlePlayer()
         {
             return;
         }
-        if(side=="1")
+        if (side == "1")
         {
-            count=1;
+            count = 1;
+            player = white;
+            computer = black;
+        }
+        else if (side == "2")
+        {
+            count = 0;
+            player = black;
+            computer = white;
         }
         else
         {
-            count=0;
+            cout << "Invalid choice\n ";
+            return;
         }
     }
-    catch (const std::exception &e)
+    catch (const exception &e)
     {
         cerr << "An exception occurred: " << e.what() << endl;
         return;
@@ -1099,7 +1136,7 @@ void singlePlayer()
                     continue;
                 }
 
-                showMove(i, j, white);
+                showMove(i, j, player);
 
                 cout << "Enter your destination cell\n";
                 cin >> dest;
@@ -1118,23 +1155,28 @@ void singlePlayer()
                     continue;
                 }
 
-                if (!checkPiece(i, j, k, l, white))
+                if (!checkPiece(i, j, k, l, player))
                 {
                     cout << "Invalid move\n";
                     continue;
                 }
+                string piece = defaultBoard[i][j];
+                reposition(i, j, k, l, player, piece);
+                if (player == white)
+                {
+                    chessboard();
+                }
                 else
                 {
-                    string piece=defaultBoard[i][j];
-                    reposition(i,j,k,l,white,piece); 
+                    reverseChessboard();
                 }
-
-                if (isCheck(k, l, white))
+                pressAnyKey("Press enter to continue\n");
+                if (isCheck(k, l, player))
                 {
                     cout << "\nWhite side is being checked\n";
                 }
             }
-            catch (const std::exception &e)
+            catch (const exception &e)
             {
                 cerr << e.what() << '\n';
                 continue;
@@ -1143,13 +1185,13 @@ void singlePlayer()
 
         else
         {
-            tuple<int, int, int> move = gameMove(black);
+            tuple<int, int, int> move = gameMove(computer);
             int i = get<0>(move) / 10;
             int j = fast_mod(get<0>(move), 10);
             int k = get<1>(move) / 10;
             int l = fast_mod(get<1>(move), 10);
-            string piece=defaultBoard[i][j];
-            reposition(i,j,k,l,black,piece);
+            string piece = defaultBoard[i][j];
+            reposition(i, j, k, l, computer, piece);
         }
 
         ++count;
@@ -1181,6 +1223,8 @@ void consoleSet()
 int ui()
 {
     consoleSet();
+    restartChessBoard();
+    restartTileBoard();
     cout << "Enter choices: or press 'q' anytime to return to menu\n";
     cout << " 1. Single player against computer\n";
     cout << " 2. Multiplayer against another player\n";
@@ -1236,5 +1280,4 @@ int main()
     // cout<<fast_mod(102,10)<<endl;
     // cout<<fast_mod(100,10)<<endl;
     return startGame();
-
 }
