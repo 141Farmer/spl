@@ -340,12 +340,12 @@ void playerVsComputer()
 
     while (true)
     {
-        if (count & 1 and turn==player)
+        if (count & 1)
         {
             chessboard();
             cellAssist();
         }
-        else if(turn == player)
+        else
         {
             reverseChessboard();
             reverseCellAssist();
