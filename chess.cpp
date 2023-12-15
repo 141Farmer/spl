@@ -1067,11 +1067,11 @@ bool knightMove(int i, int j, int k, int l, pieceType sV)
 
     if ((delta_i == 2 and delta_j == 1) or (delta_i == 1 and delta_j == 2))
     {
-        if (board[k][l] != emptys and board[k][l] != sV)
+        if (board[k][l] == sV)
         {
             return false;
         }
-        else if (board[k][l] == emptys)
+        else if (board[k][l] == emptys or board[k][l]!=sV)
         {
             return true;
         }
@@ -1148,11 +1148,6 @@ bool queenMove(int i, int j, int k, int l, pieceType sV)
 
 bool kingMove(int i, int j, int k, int l, pieceType sV, string piece)
 {
-    if (sV != wKing and sV != bKing)
-    {
-        return false;
-    }
-
     int delta_i = abs(k - i);
     int delta_j = abs(l - j);
 
