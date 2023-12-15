@@ -1209,7 +1209,15 @@ bool kingMove(int i, int j, int k, int l, pieceType sV, string piece)
 
 bool isCheckForPawn(int i, int j, pieceType sV)
 {
-    int mD = (sV == white) ? -1 : 1;
+    int mD;
+    if(sV==white)
+    {
+        mD=-1;
+    }
+    else
+    {
+        mD=1;
+    }
     int leftDiagonalRow = i + mD;
     int leftDiagonalCol = j - 1;
     int rightDiagonalRow = i + mD;
