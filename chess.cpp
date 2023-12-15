@@ -1,14 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <cstring>
-#include <cstdlib>
 #include <climits>
 #include <limits>
 #include <algorithm>
 #include <tuple>
-#ifdef _WIN32
-#include <Windows.h>
-#endif
+
 using namespace std;
 
 const int boardSize = 8;
@@ -727,7 +723,7 @@ void showMove(int i, int j, pieceType sV)
 {
     vector<vector<string>> pieceBoardTemporary = pieceBoard;
     vector<vector<pieceType>> boardTemporary = board;
-    cout << " '|' refers to source cell numbers mean possible cell of moves 'X' means invalid cell of moves\n\n\n";
+    cout << " '|' refers to source cell, numbers mean possible cell of moves, 'X' means invalid cell of moves\n\n\n";
     if (sV == white or sV == wKing)
     {
         for (int k = 0; k < boardSize; ++k)
@@ -1071,7 +1067,7 @@ bool knightMove(int i, int j, int k, int l, pieceType sV)
         {
             return false;
         }
-        else if (board[k][l] == emptys or board[k][l]!=sV)
+        else if (board[k][l] == emptys or board[k][l] != sV)
         {
             return true;
         }
@@ -1097,8 +1093,25 @@ bool bishopMove(int i, int j, int k, int l, pieceType sV)
     {
         return false;
     }
-    int rowIncrement = (k > i) ? 1 : -1;
-    int colIncrement = (l > j) ? 1 : -1;
+    int rowIncrement, colIncrement;
+
+    if (k > i)
+    {
+        rowIncrement = 1;
+    }
+    else
+    {
+        rowIncrement = -1;
+    }
+
+    if (l > j)
+    {
+        colIncrement = 1;
+    }
+    else
+    {
+        colIncrement = -1;
+    }
 
     for (int row = i + rowIncrement, col = j + colIncrement; row != k and col != l; row += rowIncrement, col += colIncrement)
     {
@@ -1127,8 +1140,33 @@ bool queenMove(int i, int j, int k, int l, pieceType sV)
 
     if ((deltaRow == deltaCol) or (deltaRow == 0 and deltaCol != 0) or (deltaRow != 0 and deltaCol == 0))
     {
-        int rowIncrement = (k > i) ? 1 : ((k < i) ? -1 : 0);
-        int colIncrement = (l > j) ? 1 : ((l < j) ? -1 : 0);
+        int rowIncrement, colIncrement;
+
+        if (k > i)
+        {
+            rowIncrement = 1;
+        }
+        else if (k < i)
+        {
+            rowIncrement = -1;
+        }
+        else
+        {
+            rowIncrement = 0;
+        }
+
+        if (l > j)
+        {
+            colIncrement = 1;
+        }
+        else if (l < j)
+        {
+            colIncrement = -1;
+        }
+        else
+        {
+            colIncrement = 0;
+        }
 
         for (int row = i + rowIncrement, col = j + colIncrement; row != k or col != l; row += rowIncrement, col += colIncrement)
         {
@@ -1157,7 +1195,7 @@ bool kingMove(int i, int j, int k, int l, pieceType sV, string piece)
         {
             return false;
         }
-        else if (board[k][l] == emptys or board[k][l]!=sV)
+        else if (board[k][l] == emptys or board[k][l] != sV)
         {
             return true;
         }
@@ -1177,9 +1215,18 @@ bool isCheckForPawn(int i, int j, pieceType sV)
     int rightDiagonalRow = i + mD;
     int rightDiagonalCol = j + 1;
 
+    string king;
+    if (sV == white)
+    {
+        king = blackKing;
+    }
+    else if (sV == black)
+    {
+        king = whiteKing;
+    }
+
     if (leftDiagonalRow >= 0 and leftDiagonalRow < boardSize and leftDiagonalCol >= 0 and leftDiagonalCol < boardSize)
     {
-        string king = (sV == white) ? blackKing : whiteKing;
         if (pieceBoard[leftDiagonalRow][leftDiagonalCol] == king)
         {
             return true;
@@ -1188,7 +1235,6 @@ bool isCheckForPawn(int i, int j, pieceType sV)
 
     if (rightDiagonalRow >= 0 and rightDiagonalRow < boardSize and rightDiagonalCol >= 0 and rightDiagonalCol < boardSize)
     {
-        string king = (sV == white) ? blackKing : whiteKing;
         if (pieceBoard[rightDiagonalRow][rightDiagonalCol] == king)
         {
             return true;
@@ -1282,11 +1328,19 @@ bool isCheckForQueen(int i, int j, pieceType sV)
         int row = i + directions[d][0];
         int col = j + directions[d][1];
 
+        string king;
+        if (sV == white)
+        {
+            king = blackKing;
+        }
+        else if (sV == black)
+        {
+            king = whiteKing;
+        }
         while (row >= 0 and row < boardSize and col >= 0 and col < boardSize)
         {
             if (pieceBoard[row][col] != " ")
             {
-                string king = (sV == white) ? blackKing : whiteKing;
                 if (pieceBoard[row][col] == king)
                 {
                     return true;
@@ -1314,9 +1368,18 @@ bool isCheckForKings(int i, int j, pieceType sV)
         int row = i + directions[d][0];
         int col = j + directions[d][1];
 
+        string king;
+        if (sV == white)
+        {
+            king = blackKing;
+        }
+        else if (sV == black)
+        {
+            king = whiteKing;
+        }
+
         if (row >= 0 and row < boardSize and col >= 0 and col < boardSize)
         {
-            string king = (sV == white) ? blackKing : whiteKing;
             if (pieceBoard[row][col] == king)
             {
                 return true;
